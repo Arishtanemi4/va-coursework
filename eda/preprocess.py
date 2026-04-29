@@ -55,7 +55,7 @@ def data_joins(df1_path, df2_path, *extra_paths):
     Reads CSVs from paths and joins them on 'area' and 'mnemonics'.
     """
     join_keys = ['area', 'mnemonics']
-    
+
     # Load and merge the first two required files
     df1 = pd.read_csv(df1_path)
     df2 = pd.read_csv(df2_path)
@@ -63,11 +63,28 @@ def data_joins(df1_path, df2_path, *extra_paths):
     
     # Loop through any additional paths provided
     for path in extra_paths:
-        # Read the file first, then merge it
         next_df = pd.read_csv(path)
         combined_df = pd.merge(combined_df, next_df, on=join_keys, how='outer')
         
     return combined_df
+
+
+
+def district_management():
+    df_2011 = pd.read_csv(f"{init.root_data_clean_joins_dir}2011.csv")
+    # df_2021 = pd.read_csv(f"{init.root_data_clean_joins_dir}2021.csv")
+    
+    df_map = pd.read_csv(f"{init.root_data_clean_joins_dir}LAD_Mapping_2011_to_2021.csv")
+
+    df_2011_mapped = pd.merge(df_2011, df_map, left_on='mnemonics', right_on='LAD2011', how='left')
+    df_2011_mapped['mnemonics'] = df_2011_mapped['LAD2021'].fillna(df_2011_mapped['mnemonics'])
+    df_2011_mapped['area'] = df_2011_mapped['LAD2021NM'].fillna(df_2011_mapped['area'])
+    df_2011_mapped = df_2011_mapped.drop(columns=['LAD2011NM', 'LAD2011', 'LAD2021NM', 'LAD2021'])
+    df_2011_agg = df_2011_mapped.groupby(['area', 'mnemonics']).sum(numeric_only=True).reset_index()
+
+    df_2011_agg.to_csv(f"{init.root_data_clean_joins_dir}2011_cleaned.csv", index=False)
+
+    print("2011 dataset cleaned and saved!")
 
 
 def main():
@@ -123,6 +140,9 @@ def main():
 
     print("Datasets saved!")
 
+    district_management()
+
+    print("District merged.")
 
 if __name__ == "__main__":
     main()
