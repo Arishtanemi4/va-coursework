@@ -2,6 +2,8 @@ import os
 import re
 import pandas as pd
 
+import __init__ as init
+
 
 # clean the dfs fetched from national statistics site
 def clean_census_data(df_path: str, sheet_name: str):
