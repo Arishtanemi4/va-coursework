@@ -1,5 +1,6 @@
 import os
 import re
+import sys
 import pandas as pd
 
 import __init__ as init
@@ -42,10 +43,10 @@ def clean_census_data(df_path: str, sheet_name: str):
     clean_name = re.sub(r'raw_', '', filename)
     clean_name = str.lower(clean_name)
 
-    os.makedirs("../data/clean", exist_ok=True)
-    
-    print(f"Saving ../data/clean/{clean_name}.csv")
-    df.to_csv(f"../data/clean/{clean_name}.csv", index=False)
+    os.makedirs(init.root_data_clean_dir, exist_ok=True)
+
+    print(f"Saving {init.root_data_clean_dir}{clean_name}.csv")
+    df.to_csv(f"{init.root_data_clean_dir}{clean_name}.csv", index=False)
 
 
 # Join the clean dfs into one single df
@@ -70,34 +71,55 @@ def data_joins(df1_path, df2_path, *extra_paths):
 
 
 def main():
-    # Clean 2011 Census data
-    clean_census_data(df_path="../data/economic_activity_raw_2011_ks601ew_ks603ew.xlsx", sheet_name="All persons")
-    clean_census_data(df_path="../data/ethnic_group_raw_2011_ks201ew.xlsx", sheet_name="Total")
-    clean_census_data(df_path="../data/occupation_raw_ks608ew_ks610ew.xlsx", sheet_name="Total; All persons")
-    clean_census_data(df_path="../data/health_raw_2011_qs302ew.xlsx", sheet_name="Total")
-    clean_census_data(df_path="../data/indusrty_raw_2011_ks605ew_ks607ew.xlsx", sheet_name="Data")
 
-    # Clean 2021 census data
-    clean_census_data(df_path="../data/econimic_activity_raw_2021_ts066.xlsx", sheet_name="Data")
-    clean_census_data(df_path="../data/ethnic_group_raw_2021_ts021.xlsx", sheet_name="Data")
-    clean_census_data(df_path="../data/occupation_raw_2021_ts063.xlsx", sheet_name="Data")
-    clean_census_data(df_path="../data/health_raw_2021_ts037.xlsx", sheet_name="Data")
-    clean_census_data(df_path="../data/industry_raw_2021_ts060.xlsx", sheet_name="Data")
+    root_dir = init.root_dir
+    root_data_dir = init.root_data_dir
+    root_data_clean_dir = init.root_data_clean_dir
+    root_data_clean_joins_dir = init.root_data_clean_joins_dir
+    
+    print(root_dir)
+    print(root_data_dir)
+    print(root_data_clean_dir)
+    print(root_data_clean_joins_dir)
+
+    # Clean 2011 Census data (Read from raw directory)
+    clean_census_data(df_path=f"{root_data_dir}economic_activity_raw_2011_ks601ew_ks603ew.xlsx", sheet_name="All persons")
+    clean_census_data(df_path=f"{root_data_dir}ethnic_group_raw_2011_ks201ew.xlsx", sheet_name="Total")
+    clean_census_data(df_path=f"{root_data_dir}occupation_raw_ks608ew_ks610ew.xlsx", sheet_name="Total; All persons")
+    clean_census_data(df_path=f"{root_data_dir}health_raw_2011_qs302ew.xlsx", sheet_name="Total")
+    clean_census_data(df_path=f"{root_data_dir}indusrty_raw_2011_ks605ew_ks607ew.xlsx", sheet_name="Data")
+
+    # Clean 2021 census data 
+    clean_census_data(df_path=f"{root_data_dir}economic_activity_raw_2021_ts066.xlsx", sheet_name="Data")
+    clean_census_data(df_path=f"{root_data_dir}ethnic_group_raw_2021_ts021.xlsx", sheet_name="Data")
+    clean_census_data(df_path=f"{root_data_dir}occupation_raw_2021_ts063.xlsx", sheet_name="Data")
+    clean_census_data(df_path=f"{root_data_dir}health_raw_2021_ts037.xlsx", sheet_name="Data")
+    clean_census_data(df_path=f"{root_data_dir}industry_raw_2021_ts060.xlsx", sheet_name="Data")
 
     # joining 2011 data
-    df_2011 = data_joins("../data/clean/ethnic_group_2011_ks201ew.csv", "../data/clean/occupation_ks608ew_ks610ew.csv", "../data/clean/health_2011_qs302ew.csv", "../data/clean/indusrty_2011_ks605ew_ks607ew.csv")
+    df_2011 = data_joins(
+        f"{root_data_clean_dir}ethnic_group_2011_ks201ew.csv",
+        f"{root_data_clean_dir}occupation_ks608ew_ks610ew.csv",
+        f"{root_data_clean_dir}health_2011_qs302ew.csv",
+        f"{root_data_clean_dir}indusrty_2011_ks605ew_ks607ew.csv"
+        )
 
     print("2011 Datasets joined")
     
     # joining 2021 data
-    df_2021 = data_joins("../data/clean/ethnic_group_2021_ts021.csv", "../data/clean/occupation_2021_ts063.csv", "../data/clean/health_2021_ts037.csv", "../data/clean/industry_2021_ts060.csv")
+    df_2021 = data_joins(
+        f"{root_data_clean_dir}ethnic_group_2021_ts021.csv",
+        f"{root_data_clean_dir}occupation_2021_ts063.csv",
+        f"{root_data_clean_dir}health_2021_ts037.csv",
+        f"{root_data_clean_dir}industry_2021_ts060.csv"
+    )
 
     print("2021 Datasets joined")
 
-    os.makedirs("../data/clean/joins", exist_ok=True)
+    os.makedirs(root_data_clean_joins_dir, exist_ok=True)
 
-    df_2011.to_csv("../data/clean/joins/2011.csv", index=False)
-    df_2021.to_csv("../data/clean/joins/2021.csv", index=False)
+    df_2011.to_csv(f"{root_data_clean_joins_dir}2011.csv", index=False)
+    df_2021.to_csv(f"{root_data_clean_joins_dir}2021.csv", index=False)
 
     print("Datasets saved!")
 
