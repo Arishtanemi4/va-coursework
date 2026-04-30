@@ -65,7 +65,7 @@ def main():
         columns=['PC1_Weight', 'PC2_Weight', 'PC3_Weight', 'PC4_Weight'],
         index=pca_features 
     )
-    loadings.to_csv(f"{init.root_data_clean_joins_dir}pca_loadings.csv")
+    loadings.to_csv(f"{init.root_data_results_dir}pca_loadings.csv")
 
     df_props = df_props.add_suffix('_prop')
 
@@ -78,7 +78,7 @@ def main():
     df_final['TSNE_X'] = tsne_result[:, 0]
     df_final['TSNE_Y'] = tsne_result[:, 1]
 
-    output_path = f"{init.root_data_clean_joins_dir}tableau_ready.csv"
+    output_path = f"{init.root_data_results_dir}tableau_ready.csv"
     df_final.to_csv(output_path, index=False)
     print(f"Saved tableau ready data to {output_path}")
 
