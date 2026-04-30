@@ -2,18 +2,25 @@ import os
 
 root_dir = "../"
 data_dir = "data/"
+
+maps_dir = "maps/"
+raw_dir = "raw/"
+
+output_dir = "output/"
 clean_dir = "clean/"
-joins_dir = "joins/"
-results_dir = "results/"
+join_dir = "join/"
+result_dir = "result/"
 
 root_dir = os.path.abspath(os.path.join(os.getcwd(), "..")) + os.sep
 
 root_data_dir = os.path.join(root_dir, data_dir)
-root_data_clean_dir = os.path.join(root_data_dir, clean_dir)
-root_data_results_dir = os.path.join(root_data_dir, results_dir)
+root_data_maps_dir = os.path.join(root_data_dir, maps_dir)
+root_data_raw_dir = os.path.join(root_data_dir, raw_dir)
+root_data_output_dir = os.path.join(root_data_dir, output_dir)
 
-root_data_clean_joins_dir = os.path.join(root_data_clean_dir, joins_dir)
-
+root_data_output_clean_dir = os.path.join(root_data_output_dir, clean_dir)
+root_data_output_result_dir = os.path.join(root_data_output_dir, result_dir)
+root_data_output_join_dir = os.path.join(root_data_output_dir, join_dir)
 
 
 tableau_snake_case_names = {
