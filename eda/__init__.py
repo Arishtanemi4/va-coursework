@@ -4,14 +4,16 @@ root_dir = "../"
 data_dir = "data/"
 clean_dir = "clean/"
 joins_dir = "joins/"
+results_dir = "results/"
 
 root_dir = os.path.abspath(os.path.join(os.getcwd(), "..")) + os.sep
-data_dir = data_dir
-clean_dir = clean_dir
 
 root_data_dir = os.path.join(root_dir, data_dir)
 root_data_clean_dir = os.path.join(root_data_dir, clean_dir)
+root_data_results_dir = os.path.join(root_data_dir, results_dir)
+
 root_data_clean_joins_dir = os.path.join(root_data_clean_dir, joins_dir)
+
 
 
 tableau_snake_case_names = {
@@ -105,4 +107,32 @@ census_ethnicity_mapping_2021 = {
     'other_ethnic_group': 'other_total',
     'other_ethnic_group_arab': 'other_arab',
     'other_ethnic_group_any_other_ethnic_group': 'other_remaining'
+}
+
+
+normalization_map = {
+    'total_population': [
+        'white_total', 'asian_total', 'black_total', 'mixed_total', 'other_total',
+        
+        'white_british', 'white_irish', 'white_gypsy_traveller', 'white_other',
+        'asian_bangladeshi', 'asian_chinese', 'asian_indian', 'asian_pakistani', 'asian_other',
+        'black_african', 'black_caribbean', 'black_other',
+        'mixed_white_asian', 'mixed_white_black_african', 'mixed_white_black_caribbean', 'mixed_other',
+        'other_arab', 'other_remaining',
+        
+        'very_good_health', 'good_health', 'fair_health', 'bad_health', 'very_bad_health'
+    ],
+    'all_occupations': [
+        'managers_directors_and_senior_officials', 'professional_occupations', 'associate_prof_and_tech',
+        'admin_and_secretarial', 'skilled_trades_occupations', 'caring_and_leisure',
+        'sales_and_customer_service', 'process_plant_and_machine_operatives', 'elementary_occupations'
+    ],
+    'all_categories_industry': [
+        'agriculture_forestry_and_fishing', 'mining_and_quarrying', 'manufacturing', 
+        'utilities_energy', 'water_and_waste_management', 'construction', 
+        'wholesale_and_retail', 'transport_and_storage', 'accommodation_and_food',
+        'information_and_communication', 'financial_and_insurance', 'real_estate_activities',
+        'professional_and_scientific', 'admin_and_support_services', 'public_admin_and_defence',
+        'education', 'health_and_social_work', 'other_services'
+    ]
 }

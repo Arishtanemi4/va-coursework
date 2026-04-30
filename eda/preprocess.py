@@ -31,7 +31,7 @@ def clean_census_data(df_path: str, sheet_name: str):
     df.columns = df.columns.str.lower()  # lowering col names (personal preferrence)
     # regex to clean col names
     df.columns = (df.columns.str.replace(r'[ /]', '_', regex=True).str.replace(r'[:()\-]', '', regex=True))
-    df = df.rename(columns={df.columns[1]:"mnemonics"})
+    df = df.rename(columns={df.columns[1]:"district_code"})
     df = df.rename(columns={df.columns[0]:"area"})
 
     # Remove the las disclaimer and nan row
@@ -52,9 +52,9 @@ def clean_census_data(df_path: str, sheet_name: str):
 # Join the clean dfs into one single df
 def data_joins(df1_path, df2_path, *extra_paths):
     """
-    Reads CSVs from paths and joins them on 'area' and 'mnemonics'.
+    Reads CSVs from paths and joins them on 'area' and 'district_code'.
     """
-    join_keys = ['area', 'mnemonics']
+    join_keys = ['area', 'district_code']
 
     # Load and merge the first two required files
     df1 = pd.read_csv(df1_path)
@@ -76,11 +76,14 @@ def district_management():
     
     df_map = pd.read_csv(f"{init.root_data_clean_joins_dir}LAD_Mapping_2011_to_2021.csv")
 
-    df_2011_mapped = pd.merge(df_2011, df_map, left_on='mnemonics', right_on='LAD2011', how='left')
-    df_2011_mapped['mnemonics'] = df_2011_mapped['LAD2021'].fillna(df_2011_mapped['mnemonics'])
+    df_2011_mapped = pd.merge(df_2011, df_map, left_on='district_code', right_on='LAD2011', how='left')  # left join on 2011 sicnce there were more districts in 2011 than 2021
+
+    df_2011_mapped['district_code'] = df_2011_mapped['LAD2021'].fillna(df_2011_mapped['district_code'])
     df_2011_mapped['area'] = df_2011_mapped['LAD2021NM'].fillna(df_2011_mapped['area'])
+
     df_2011_mapped = df_2011_mapped.drop(columns=['LAD2011NM', 'LAD2011', 'LAD2021NM', 'LAD2021'])
-    df_2011_agg = df_2011_mapped.groupby(['area', 'mnemonics']).sum(numeric_only=True).reset_index()
+
+    df_2011_agg = df_2011_mapped.groupby(['area', 'district_code']).sum(numeric_only=True).reset_index()
 
     df_2011_agg.to_csv(f"{init.root_data_clean_joins_dir}2011_cleaned.csv", index=False)
 
