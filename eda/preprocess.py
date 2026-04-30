@@ -87,6 +87,20 @@ def district_management():
     print("2011 dataset cleaned and saved!")
 
 
+
+def column_consolidation(df_path, column_mapping):
+    df = pd.read_csv(df_path)
+    df = df.rename(columns=column_mapping)
+    df = df.rename(columns=init.tableau_snake_case_names)
+
+    if 'white_roma' in df.columns:
+        df['white_other'] = df['white_other'] + df['white_roma']
+        df.drop(columns=['white_roma'], inplace=True)
+    
+    df.to_csv(df_path, index=False)
+
+
+
 def main():
 
     root_dir = init.root_dir
@@ -100,14 +114,12 @@ def main():
     print(root_data_clean_joins_dir)
 
     # Clean 2011 Census data (Read from raw directory)
-    clean_census_data(df_path=f"{root_data_dir}economic_activity_raw_2011_ks601ew_ks603ew.xlsx", sheet_name="All persons")
     clean_census_data(df_path=f"{root_data_dir}ethnic_group_raw_2011_ks201ew.xlsx", sheet_name="Total")
-    clean_census_data(df_path=f"{root_data_dir}occupation_raw_ks608ew_ks610ew.xlsx", sheet_name="Total; All persons")
+    clean_census_data(df_path=f"{root_data_dir}occupation_raw_2011_ks608ew_ks610ew.xlsx", sheet_name="Total; All persons")
     clean_census_data(df_path=f"{root_data_dir}health_raw_2011_qs302ew.xlsx", sheet_name="Total")
     clean_census_data(df_path=f"{root_data_dir}indusrty_raw_2011_ks605ew_ks607ew.xlsx", sheet_name="Data")
 
     # Clean 2021 census data 
-    clean_census_data(df_path=f"{root_data_dir}economic_activity_raw_2021_ts066.xlsx", sheet_name="Data")
     clean_census_data(df_path=f"{root_data_dir}ethnic_group_raw_2021_ts021.xlsx", sheet_name="Data")
     clean_census_data(df_path=f"{root_data_dir}occupation_raw_2021_ts063.xlsx", sheet_name="Data")
     clean_census_data(df_path=f"{root_data_dir}health_raw_2021_ts037.xlsx", sheet_name="Data")
@@ -116,7 +128,7 @@ def main():
     # joining 2011 data
     df_2011 = data_joins(
         f"{root_data_clean_dir}ethnic_group_2011_ks201ew.csv",
-        f"{root_data_clean_dir}occupation_ks608ew_ks610ew.csv",
+        f"{root_data_clean_dir}occupation_2011_ks608ew_ks610ew.csv",
         f"{root_data_clean_dir}health_2011_qs302ew.csv",
         f"{root_data_clean_dir}indusrty_2011_ks605ew_ks607ew.csv"
         )
@@ -143,6 +155,11 @@ def main():
     district_management()
 
     print("District merged.")
+
+    column_consolidation(f"{root_data_clean_joins_dir}2011_cleaned.csv", init.census_ethnicity_mapping_2011)
+    column_consolidation(f"{root_data_clean_joins_dir}2021.csv", init.census_ethnicity_mapping_2021)
+
+    print("Columns consolidated.")
 
 if __name__ == "__main__":
     main()
