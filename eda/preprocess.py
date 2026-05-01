@@ -50,7 +50,7 @@ def clean_census_data(df_path: str, sheet_name: str):
 
 
 # Join the clean dfs into one single df
-def data_joins(df1_path, df2_path, *extra_paths):
+def data_joins(df1_path: str, df2_path: str, *extra_paths: str) -> pd.DataFrame:
     """
     Reads CSVs from paths and joins them on 'area' and 'district_code'.
     """
@@ -91,7 +91,7 @@ def district_management():
 
 
 
-def column_consolidation(df_path, column_mapping):
+def column_consolidation(df_path: str, column_mapping: dict):
     df = pd.read_csv(df_path)
     df = df.rename(columns=column_mapping)
     df = df.rename(columns=init.tableau_snake_case_names)
